@@ -1,0 +1,66 @@
+---
+import Form from "../components/form.astro";
+import Card from "../components/card.astro";
+import Layout from "../layouts/Layout.astro";
+
+const key = import.meta.env.KEY;
+---
+
+<Layout title="Weather App">
+    <main
+        class="bg-white w-screen h-screen flex flex-col items-center pt-8 px-12"
+    >
+        <h2 class="text-3xl font-bold font-sans">Runtime Weather App</h2>
+        <h3 class="text-xl font-bold text-orange-500 font-sans">
+            /**Weather in your browser**\
+        </h3>
+        <section
+            class="w-full h-full flex flex-row items-center p-12 space-x-4"
+        >
+            <Form />
+            <Card />
+        </section>
+    </main>
+</Layout>
+<script define:vars={{ key }}>
+const $city = document.getElementById("city");
+const $weather = document.getElementById("weather");
+const $temp = document.getElementById("temp");
+const $lon = document.getElementById("lon");
+const $lat = document.getElementById("lat");
+const $nameCity = document.getElementById("name");
+const $logo = document.getElementById("logo");
+const $form = document.getElementById("form");
+
+async function fetchData() {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${$city.value}&appid=${key}`);
+    const data = await response.json();
+    return data;
+}
+
+function sortData(name, weather, temp, lon, lat) {
+    // because the api returns temp in kelvin
+    const celsiusTemp = parseInt(temp - 273.15);
+
+    $nameCity.innerText = name;
+    $weather.innerText = weather;
+    $temp.innerText = `${celsiusTemp}Cº`;
+    $lon.innerText = lon;
+    $lat.innerText = lat;
+    if (celsiusTemp >= 27) {
+        $logo.setAttribute("src", "/hot.svg");
+    } else {
+    $logo.setAttribute("src", "/cold.svg");
+    }
+}
+$form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const value = fetchData();
+    value.then(x => {
+        sortData(x.name,x.weather[0].main,x.main.temp,x.coord.lon,x.coord.lat);
+    })
+    .catch(err => {
+        throw new Error('cant load up the app, because the api no response ' + err);
+    });
+    });
+</script>
