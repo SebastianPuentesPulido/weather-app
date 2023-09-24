@@ -8,7 +8,7 @@ In this project, you will be find a short astro example with basic knowledge abo
 * **Generate your own Api key:** sign in in open weather map, then go to user setting and click in Api Keys, generate one and copy it.
 * **Clone this repository with the next command**
   ```
-  git clone https://github.com/SebastianPuentesPulido/weather-app
+  git clone https://github.com/SebastianPuentesPulido/weather-app.git
   ```
 * **Install Dependencies**
   ```javascript
